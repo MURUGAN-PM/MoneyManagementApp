@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="ta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Money Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F5FA;--card:#FFFFFF;--ink:#16193A;--mute:#59607F;--line:#DCE1EE;--brand:#2B3A8C;--onBrand:#FFFFFF;--in:#1B7F55;--out:#C03A3A;--sv:#A86A0A;--track:#E6EAF4;--field:#F3F5FA;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1226;--card:#181C3A;--ink:#E9ECFA;--mute:#A3AAD0;--line:#2B3160;--brand:#8E9CFF;--onBrand:#0F1226;--in:#4CD08F;--out:#FF8585;--sv:#F2B65A;--track:#262B56;--field:#0F1226;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1226;--card:#181C3A;--ink:#E9ECFA;--mute:#A3AAD0;--line:#2B3160;--brand:#8E9CFF;--onBrand:#0F1226;--in:#4CD08F;--out:#FF8585;--sv:#F2B65A;--track:#262B56;--field:#0F1226;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hind Madurai","Noto Sans Tamil","Latha",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto;padding:16px 16px 48px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0 16px}
+h1{font-size:1.9rem;margin:0;font-weight:700;line-height:1.1;letter-spacing:-.01em}
+header p{margin:2px 0 0;color:var(--mute);font-size:.9rem}
+h2{font-size:1.05rem;margin:0 0 12px;font-weight:700}
+.lang{border:1px solid var(--brand);background:transparent;color:var(--brand);border-radius:999px;padding:6px 16px;font:inherit;font-weight:600;cursor:pointer;min-height:40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+label{display:block;font-size:.9rem;color:var(--mute);margin-bottom:4px}
+input,select{width:100%;font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+button{font:inherit}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--track);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;color:var(--ink);border-radius:9px;padding:9px 6px;font-weight:600;cursor:pointer;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--card);box-shadow:0 0 0 2px var(--brand) inset}
+.seg.t button[aria-pressed="true"][data-t="in"]{box-shadow:0 0 0 2px var(--in) inset;color:var(--in)}
+.seg.t button[aria-pressed="true"][data-t="out"]{box-shadow:0 0 0 2px var(--out) inset;color:var(--out)}
+.seg.t button[aria-pressed="true"][data-t="sv"]{box-shadow:0 0 0 2px var(--sv) inset;color:var(--sv)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.grid .full{grid-column:1/-1}
+.btn{width:100%;border:0;border-radius:12px;background:var(--brand);color:var(--onBrand);font-weight:700;padding:12px;min-height:48px;cursor:pointer}
+.hero{background:var(--brand);color:var(--onBrand);border-radius:20px;padding:22px 20px;margin-bottom:16px}
+.hero .lbl{opacity:.85;font-size:.95rem}
+.hero .big{font-size:clamp(2.3rem,11vw,3.4rem);font-weight:700;line-height:1.1;margin:4px 0 16px;letter-spacing:-.02em}
+.hero .row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:.9rem}
+.hero .row b{display:block;font-size:1.1rem}
+.per{display:flex;gap:10px;align-items:center;margin-top:12px}
+.per input{flex:1}
+.plabel{font-weight:600;margin:12px 0 0}
+.tbl{overflow-x:auto;margin-top:6px}
+.tr,.th{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:6px;min-width:420px;padding:10px 6px;border-bottom:1px solid var(--line);text-align:right;align-items:center;font-size:.9rem}
+.tr{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--ink);cursor:pointer}
+.tr:hover{background:var(--field)}
+.th{color:var(--mute);font-size:.85rem}
+.tr>:first-child,.th>:first-child{text-align:left;font-weight:600}
+.c-in{color:var(--in)}.c-out{color:var(--out)}.c-sv{color:var(--sv)}
+.bar{margin-bottom:12px}
+.bar .top{display:flex;justify-content:space-between;gap:8px;font-size:.95rem;margin-bottom:4px}
+.track{height:10px;background:var(--track);border-radius:999px;overflow:hidden}
+.fill{height:100%;background:var(--out);border-radius:999px}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+li:last-child{border-bottom:0}
+li .t{font-weight:600}
+li .s{font-size:.85rem;color:var(--mute);overflow-wrap:anywhere}
+li .a{font-weight:700;white-space:nowrap}
+.del{border:0;background:transparent;color:var(--mute);font-size:.85rem;cursor:pointer;padding:8px;min-height:40px;text-decoration:underline}
+.empty{color:var(--mute);margin:0}
+.hint{font-size:.85rem;color:var(--mute);margin:8px 0 0}
+.reset{display:block;margin:24px auto 0;border:0;background:transparent;color:var(--mute);font-size:.85rem;text-decoration:underline;cursor:pointer;padding:8px}
+.sec{background:var(--track);color:var(--ink)}
+.mic{display:flex;align-items:center;justify-content:center;gap:8px}
+.mini{border:1px solid var(--brand);background:transparent;color:var(--brand);border-radius:999px;font-weight:600;padding:6px 14px;min-height:40px;cursor:pointer}
+.hide{display:none}
+.authWrap{max-width:420px;margin:0 auto;padding:16px 16px 48px;min-height:100vh}
+.authTop{display:flex;justify-content:flex-end;padding:8px 0}
+.authBox{padding-top:4vh;text-align:center}
+.authBox .card{text-align:left;margin-top:18px}
+.logo{width:64px;height:64px;border-radius:18px;background:var(--brand);color:var(--onBrand);display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px}
+.pw{position:relative}
+.pw input{padding-right:84px}
+.pw .mini{position:absolute;right:4px;top:50%;transform:translateY(-50%);min-height:36px;padding:4px 12px;font-size:.85rem}
+.err{color:var(--out);font-size:.9rem;min-height:1.4em;margin:10px 0 8px}
+.lnk{border:0;background:transparent;color:var(--mute);font-size:.9rem;text-decoration:underline;cursor:pointer;padding:10px}
+.hbtns{display:flex;gap:8px;align-items:center}
+@media (prefers-reduced-motion:no-preference){.fill{transition:width .3s ease}}
+</style>
+</head>
+<body>
+<div id="auth" class="authWrap hide">
+  <div class="authTop"><button class="lang" id="langBtn2" type="button">English</button></div>
+  <div class="authBox">
+    <div class="logo" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v2"/><path d="M3 7v11a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14.5" r="1.2" fill="currentColor"/></svg></div>
+    <h1 data-i18n="title">Money Management</h1>
+    <p class="hint" id="authSub" style="font-size:.95rem"></p>
+    <form id="authF" class="card" novalidate>
+      <h2 id="authT"></h2>
+      <div><label for="au" data-i18n="aUser">Username</label><input type="text" id="au" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="40"></div>
+      <div style="margin-top:14px"><label for="ap" data-i18n="aPass">Password</label>
+        <div class="pw"><input type="password" id="ap" autocomplete="current-password" maxlength="100"><button type="button" class="mini" id="apShow"></button></div></div>
+      <div id="cfWrap" class="hide" style="margin-top:14px"><label for="ac" data-i18n="aConf">Confirm password</label><input type="password" id="ac" autocomplete="new-password" maxlength="100"></div>
+      <p class="err" id="authErr" role="alert"></p>
+      <button class="btn" type="submit" id="authBtn"></button>
+    </form>
+    <p class="hint hide" id="storeWarn" role="status" data-i18n="aStoreWarn" style="color:var(--out);text-align:left"></p>
+    <button class="lnk hide" id="forgot" type="button" data-i18n="aForgot">Forgot password?</button>
+    <div class="card hide" id="fc" role="alertdialog" aria-labelledby="fcT" style="text-align:left">
+      <p id="fcT" data-i18n="aForgotMsg" style="margin:0 0 12px"></p>
+      <div style="display:flex;gap:10px">
+        <button class="btn" id="fcY" type="button" data-i18n="aForgotYes" style="background:var(--out);color:#fff"></button>
+        <button class="btn" id="fcN" type="button" data-i18n="cancel" style="background:var(--track);color:var(--ink)">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="wrap hide">
+<header>
+  <div>
+    <h1 data-i18n="title">Money Management</h1>
+    <p data-i18n="sub">Income, spending and savings in one place</p>
+  </div>
+  <div class="hbtns"><button class="lang" id="langBtn" type="button">English</button><button class="lang" id="logout" type="button" data-i18n="aLogout">Log out</button></div>
+</header>
+
+<section class="card" style="border:2px solid var(--brand)" aria-live="polite">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="color:var(--mute);font-size:.95rem" data-i18n="totalBal">Total available balance</span><button type="button" class="mini" id="say" data-i18n="say">Read out</button></div>
+  <div id="allBal" style="font-size:clamp(2rem,9vw,2.8rem);font-weight:700;line-height:1.15;letter-spacing:-.02em;color:var(--brand)">₹0</div>
+  <div style="color:var(--mute);font-size:.9rem;margin-top:4px"><span data-i18n="totalSv">Total saved</span>: <b id="allSv" class="c-sv">₹0</b></div>
+</section>
+
+<section class="card">
+  <h2 data-i18n="add">Add entry</h2>
+  <div class="seg t" role="group" aria-label="Type" id="types">
+    <button type="button" data-t="in" aria-pressed="false" data-i18n="income">Income</button>
+    <button type="button" data-t="out" aria-pressed="true" data-i18n="out">Spend</button>
+    <button type="button" data-t="sv" aria-pressed="false" data-i18n="sv">Saving</button>
+  </div>
+  <form id="f" class="grid">
+    <div class="full">
+      <button class="btn sec mic" type="button" id="mic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg><span data-i18n="micBtn">Speak entry</span></button>
+      <p class="hint" id="micMsg" role="status" style="margin:6px 0 0"></p>
+    </div>
+    <div><label for="amt" data-i18n="amount">Amount (₹)</label><input type="number" id="amt" inputmode="decimal" min="0.01" step="any" required></div>
+    <div><label for="cat" data-i18n="category">Category</label><select id="cat"></select></div>
+    <div><label for="date" data-i18n="date">Date</label><input type="date" id="date" required></div>
+    <div><label for="note" data-i18n="note">Note</label><input type="text" id="note" maxlength="60"></div>
+    <div class="full"><button class="btn" type="submit" data-i18n="addBtn">Add</button></div>
+  </form>
+</section>
+
+<section class="card">
+  <div class="seg" role="group" aria-label="Period" id="modes">
+    <button type="button" data-m="day" aria-pressed="false" data-i18n="day">Day</button>
+    <button type="button" data-m="month" aria-pressed="true" data-i18n="month">Month</button>
+    <button type="button" data-m="year" aria-pressed="false" data-i18n="year">Year</button>
+  </div>
+  <div class="per">
+    <input type="date" id="pDay" class="hide" aria-label="Day">
+    <input type="month" id="pMonth" aria-label="Month">
+    <select id="pYear" class="hide" aria-label="Year"></select>
+  </div>
+  <p class="plabel" id="plabel"></p>
+</section>
+
+<section class="hero" aria-live="polite">
+  <div class="lbl" data-i18n="balance">Balance</div>
+  <div class="big" id="bal">₹0</div>
+  <div class="row">
+    <div><span data-i18n="income">Income</span><b id="tIn">₹0</b></div>
+    <div><span data-i18n="out">Spend</span><b id="tOut">₹0</b></div>
+    <div><span data-i18n="sv">Savings</span><b id="tSv">₹0</b></div>
+  </div>
+</section>
+
+<section class="card hide" id="yrCard">
+  <h2 data-i18n="allYears">All years</h2>
+  <div class="tbl" id="yrTbl"></div>
+</section>
+
+<section class="card" id="brk">
+  <h2 id="brkT"></h2>
+  <div class="tbl" id="tbl"></div>
+  <p class="hint" data-i18n="tap">Tap a row to open it.</p>
+</section>
+
+<section class="card" id="catCard">
+  <h2 data-i18n="byCat">Where your spending went</h2>
+  <div id="cats"></div>
+</section>
+
+<section class="card">
+  <h2 data-i18n="list">Entries</h2>
+  <ul id="list"></ul>
+</section>
+
+<section class="card">
+  <h2 data-i18n="bkT">Backup and restore</h2>
+  <p class="hint" data-i18n="bkHint" style="margin:0 0 10px">Create a backup, copy it and keep it in WhatsApp or notes. To restore, paste it here and tap Restore.</p>
+  <textarea id="bk" rows="4" aria-label="Backup" style="width:100%;font:inherit;font-size:.8rem;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:10px;padding:10px"></textarea>
+  <div class="grid" style="margin-top:10px">
+    <button class="btn sec" type="button" id="bkMake" data-i18n="bkMake">Create backup</button>
+    <button class="btn sec" type="button" id="bkCopy" data-i18n="bkCopy">Copy</button>
+    <button class="btn sec" type="button" id="bkShare" data-i18n="bkShare">Share</button>
+    <button class="btn" type="button" id="bkRest" data-i18n="bkRest">Restore</button>
+  </div>
+  <p class="hint" id="bkMsg" role="status"></p>
+</section>
+
+<button class="reset" id="reset" type="button" data-i18n="reset">Clear all data</button>
+<div class="card hide" id="rc" role="alertdialog" aria-labelledby="rcT" style="margin-top:12px">
+  <p id="rcT" data-i18n="confirm" style="margin:0 0 12px">Delete all saved data on this device?</p>
+  <div style="display:flex;gap:10px">
+    <button class="btn" id="rcY" type="button" data-i18n="yes" style="background:var(--out);color:#fff">Yes, delete all</button>
+    <button class="btn" id="rcN" type="button" data-i18n="cancel" style="background:var(--track);color:var(--ink)">Cancel</button>
+  </div>
+</div>
+</div>
+
+<script>
+const CATS={
+ in:[['sal','சம்பளம்','Salary'],['bon','போனஸ்','Bonus'],['ext','கூடுதல் வருமானம்','Extra income'],['oth','மற்றவை','Other']],
+ out:[['rent','வாடகை','Rent'],['groc','மளிகை','Groceries'],['bills','கட்டணங்கள்','Bills'],['emi','EMI தவணை','EMI'],['trans','போக்குவரத்து','Transport'],['food','வெளியில் உணவு','Eating out'],['shop','ஷாப்பிங்','Shopping'],['health','மருத்துவம்','Health'],['fam','குடும்பம்','Family'],['oth','மற்றவை','Other']],
+ sv:[['rd','RD / SIP / சீட்டு','RD / SIP / Chit'],['gold','தங்கம்','Gold'],['emg','அவசர நிதி','Emergency fund'],['oth','மற்றவை','Other']]
+};
+const TX={
+ en:{sub:'Income, deductions and savings in one place',add:'Add entry',income:'Income',out:'Deductions',sv:'Savings',amount:'Amount (₹)',category:'Category',date:'Date',note:'Note',addBtn:'Add',day:'Day',month:'Month',year:'Year',balance:'Balance',tap:'Tap a row to open it.',byCat:'Where deductions went',list:'Entries',reset:'Clear all data',confirm:'Delete all saved data on this device?',del:'Delete',empty:'No entries for this period. Add one above.',noCat:'No deductions in this period.',byDay:'Day by day',byMonth:'Month by month',tDay:'Day',tMonth:'Month',tIn:'Income',tOut:'Deducted',tSv:'Saved',typeIn:'Income',typeOut:'Deduction',typeSv:'Saving'},
+ ta:{sub:'வருமானம், கழிவுகள், சேமிப்பு ஒரே இடத்தில்',add:'பதிவைச் சேர்',income:'வருமானம்',out:'கழிவுகள்',sv:'சேமிப்பு',amount:'தொகை (₹)',category:'வகை',date:'தேதி',note:'குறிப்பு',addBtn:'சேர்',day:'நாள்',month:'மாதம்',year:'வருடம்',balance:'மீதம்',tap:'ஒரு வரியைத் தொட்டால் திறக்கும்.',byCat:'கழிவுகள் எங்கே போயின',list:'பதிவுகள்',reset:'எல்லா தரவையும் அழி',confirm:'இந்தச் சாதனத்தில் சேமித்த எல்லா தரவையும் அழிக்கவா?',del:'நீக்கு',empty:'இந்தக் காலத்துக்கு பதிவுகள் இல்லை. மேலே ஒன்றைச் சேர்க்கவும்.',noCat:'இந்தக் காலத்தில் கழிவுகள் இல்லை.',byDay:'நாள் வாரியாக',byMonth:'மாதம் வாரியாக',tDay:'நாள்',tMonth:'மாதம்',tIn:'வருமானம்',tOut:'கழிவு',tSv:'சேமிப்பு',typeIn:'வருமானம்',typeOut:'கழிவு',typeSv:'சேமிப்பு'}
+};
+Object.assign(TX.en,{sub:'Income, spending and savings in one place',out:'Spend',byCat:'Where your spending went',noCat:'No spending in this period.',tOut:'Spent',typeOut:'Spend'});
+Object.assign(TX.ta,{sub:'வருமானம், செலவு, சேமிப்பு ஒரே இடத்தில்',out:'செலவு',byCat:'செலவு எங்கே போனது',noCat:'இந்தக் காலத்தில் செலவுகள் இல்லை.',tOut:'செலவு',typeOut:'செலவு'});
+Object.assign(TX.en,{title:'Money Management',allYears:'All years',yes:'Yes, delete all',cancel:'Cancel',totalBal:'Total available balance',totalSv:'Total saved',balance:'Balance for this period'});
+Object.assign(TX.ta,{totalBal:'மொத்த கையிருப்பு',totalSv:'மொத்த சேமிப்பு',balance:'இந்தக் காலத்தின் மீதம்'});
+Object.assign(TX.ta,{yes:'ஆம், எல்லாவற்றையும் அழி',cancel:'ரத்து'});
+Object.assign(TX.ta,{allYears:'எல்லா வருடங்கள்'});
+Object.assign(TX.ta,{title:'பண மேலாண்மை'});
+const KEY='selavu-v1';
+let S={lang:'ta',items:[]};
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+const $=id=>document.getElementById(id);
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const t=k=>TX[S.lang][k];
+const loc=()=>S.lang==='ta'?'ta-IN':'en-IN';
+const fmt=n=>(n<0?'-':'')+'₹'+Math.round(Math.abs(n)).toLocaleString('en-IN');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today=()=>new Date().toLocaleDateString('en-CA');
+const cname=(ty,id)=>{const c=CATS[ty].find(c=>c[0]===id)||CATS[ty][CATS[ty].length-1];return c[S.lang==='ta'?1:2]};
+const dl=(d,y)=>new Date(d+'T00:00:00').toLocaleDateString(loc(),y?{day:'numeric',month:'short',year:'numeric'}:{day:'numeric',month:'short'});
+const ml=(k,y)=>new Date(+k.slice(0,4),+k.slice(5,7)-1,1).toLocaleDateString(loc(),y?{month:'long',year:'numeric'}:{month:'long'});
+
+let TY='out';
+const d0=today();
+let V={mode:'month',day:d0,month:d0.slice(0,7),year:d0.slice(0,4)};
+$('date').value=d0;
+
+function key(){return V.mode==='day'?V.day:V.mode==='month'?V.month:V.year}
+const sum=(a,ty)=>a.filter(i=>i.type===ty).reduce((s,i)=>s+i.amt,0);
+
+function fillCats(){
+  const cur=$('cat').value;
+  $('cat').innerHTML=CATS[TY].map(c=>`<option value="${c[0]}">${c[S.lang==='ta'?1:2]}</option>`).join('');
+  if(CATS[TY].some(c=>c[0]===cur))$('cat').value=cur;
+}
+
+function applyLang(){
+  document.documentElement.lang=S.lang;
+  document.title=t('title');
+  document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));
+  $('langBtn').textContent=$('langBtn2').textContent=S.lang==='ta'?'English':'தமிழ்';
+  authRefresh();
+  fillCats();render();
+}
+
+function render(){
+  const k=key();
+  const aIn=sum(S.items,'in'),aOut=sum(S.items,'out'),aSv=sum(S.items,'sv');
+  $('allBal').textContent=fmt(aIn-aOut-aSv);$('allSv').textContent=fmt(aSv);
+  document.querySelectorAll('#modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===V.mode));
+  document.querySelectorAll('#types button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===TY));
+  $('pDay').classList.toggle('hide',V.mode!=='day');
+  $('pMonth').classList.toggle('hide',V.mode!=='month');
+  $('pYear').classList.toggle('hide',V.mode!=='year');
+  $('pDay').value=V.day;$('pMonth').value=V.month;
+  const yrs=[...new Set([...S.items.map(i=>i.date.slice(0,4)),V.year,today().slice(0,4)])].sort().reverse();
+  $('pYear').innerHTML=yrs.map(y=>`<option value="${y}">${y}</option>`).join('');$('pYear').value=V.year;
+  $('yrCard').classList.toggle('hide',V.mode!=='year');
+  const yg={};S.items.forEach(i=>{const y=i.date.slice(0,4);(yg[y]=yg[y]||[]).push(i)});
+  const yk=Object.keys(yg).sort().reverse(),zz=n=>n?fmt(n):'–';
+  $('yrTbl').innerHTML=yk.length?`<div class="th"><span>${t('year')}</span><span>${t('tIn')}</span><span>${t('tOut')}</span><span>${t('tSv')}</span></div>`+yk.map(y=>`<button class="tr" type="button" data-y="${y}"${y===V.year?' style="background:var(--field)" aria-current="true"':''}><span>${y}</span><span class="c-in">${zz(sum(yg[y],'in'))}</span><span class="c-out">${zz(sum(yg[y],'out'))}</span><span class="c-sv">${zz(sum(yg[y],'sv'))}</span></button>`).join(''):`<p class="empty">${t('empty')}</p>`;
+  $('plabel').textContent=V.mode==='day'?dl(V.day,1):V.mode==='month'?ml(V.month,1):V.year;
+
+  const items=S.items.filter(i=>i.date.startsWith(k)).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+  const tin=sum(items,'in'),tout=sum(items,'out'),tsv=sum(items,'sv');
+  $('bal').textContent=fmt(tin-tout-tsv);
+  $('tIn').textContent=fmt(tin);$('tOut').textContent=fmt(tout);$('tSv').textContent=fmt(tsv);
+
+  const brk=$('brk');
+  if(V.mode==='day'){brk.classList.add('hide')}
+  else{
+    brk.classList.remove('hide');
+    $('brkT').textContent=V.mode==='month'?t('byDay'):t('byMonth');
+    const g={};
+    items.forEach(i=>{const gk=V.mode==='month'?i.date:i.date.slice(0,7);(g[gk]=g[gk]||[]).push(i)});
+    const ks=Object.keys(g).sort().reverse();
+    const z=n=>n?fmt(n):'–';
+    $('tbl').innerHTML=ks.length?`<div class="th"><span>${V.mode==='month'?t('tDay'):t('tMonth')}</span><span>${t('tIn')}</span><span>${t('tOut')}</span><span>${t('tSv')}</span></div>`+ks.map(gk=>`<button class="tr" type="button" data-k="${gk}"><span>${V.mode==='month'?dl(gk):ml(gk)}</span><span class="c-in">${z(sum(g[gk],'in'))}</span><span class="c-out">${z(sum(g[gk],'out'))}</span><span class="c-sv">${z(sum(g[gk],'sv'))}</span></button>`).join(''):`<p class="empty">${t('empty')}</p>`;
+  }
+
+  const outs=items.filter(i=>i.type==='out'),cg={};
+  outs.forEach(i=>cg[i.cat]=(cg[i.cat]||0)+i.amt);
+  const ce=Object.entries(cg).sort((a,b)=>b[1]-a[1]);
+  $('cats').innerHTML=ce.length?ce.map(([c,v])=>`<div class="bar"><div class="top"><span>${cname('out',c)}</span><span>${fmt(v)} (${Math.round(v/tout*100)}%)</span></div><div class="track"><div class="fill" style="width:${v/tout*100}%"></div></div></div>`).join(''):`<p class="empty">${t('noCat')}</p>`;
+
+  $('list').innerHTML=items.length?items.map(i=>{
+    const sign=i.type==='in'?'+':i.type==='out'?'−':'';
+    const tn={in:t('typeIn'),out:t('typeOut'),sv:t('typeSv')}[i.type];
+    return `<li><div><div class="t">${cname(i.type,i.cat)}</div><div class="s">${tn}, ${dl(i.date,V.mode==='year')}${i.note?', '+esc(i.note):''}</div></div><div style="display:flex;align-items:center;gap:4px"><span class="a c-${i.type}">${sign}${fmt(i.amt)}</span><button class="del" type="button" data-id="${i.id}">${t('del')}</button></div></li>`;
+  }).join(''):`<li><p class="empty">${t('empty')}</p></li>`;
+}
+
+$('langBtn').onclick=$('langBtn2').onclick=()=>{S.lang=S.lang==='ta'?'en':'ta';save();applyLang()};
+$('types').onclick=e=>{const b=e.target.closest('button');if(!b)return;TY=b.dataset.t;fillCats();render()};
+$('modes').onclick=e=>{const b=e.target.closest('button');if(!b)return;V.mode=b.dataset.m;render()};
+$('pDay').oninput=e=>{if(!e.target.value)return;V.day=e.target.value;V.month=V.day.slice(0,7);V.year=V.day.slice(0,4);render()};
+$('pMonth').oninput=e=>{if(!e.target.value)return;V.month=e.target.value;V.year=V.month.slice(0,4);render()};
+$('pYear').oninput=e=>{if(/^\d{4}$/.test(e.target.value)){V.year=e.target.value;render()}};
+$('tbl').onclick=e=>{
+  const b=e.target.closest('.tr');if(!b)return;const k=b.dataset.k;
+  if(V.mode==='month'){V.mode='day';V.day=k;V.month=k.slice(0,7);V.year=k.slice(0,4)}
+  else{V.mode='month';V.month=k;V.year=k.slice(0,4)}
+  render();window.scrollTo({top:0,behavior:'smooth'});
+};
+$('yrTbl').onclick=e=>{const b=e.target.closest('.tr');if(!b)return;V.year=b.dataset.y;render()};
+$('f').onsubmit=e=>{
+  e.preventDefault();
+  const amt=+$('amt').value,date=$('date').value;
+  if(!(amt>0)||!date)return;
+  S.items.push({id:Date.now(),type:TY,amt,cat:$('cat').value,note:$('note').value.trim(),date});
+  V.day=date;V.month=date.slice(0,7);V.year=date.slice(0,4);
+  $('amt').value='';$('note').value='';
+  save();render();$('amt').focus();
+};
+$('list').onclick=e=>{
+  const b=e.target.closest('.del');if(!b)return;
+  S.items=S.items.filter(i=>String(i.id)!==b.dataset.id);save();render();
+};
+$('reset').onclick=()=>{$('rc').classList.remove('hide');$('rcN').focus()};
+$('rcN').onclick=()=>$('rc').classList.add('hide');
+$('rcY').onclick=()=>{S.items=[];save();$('rc').classList.add('hide');render()};
+Object.assign(TX.en,{micBtn:'Speak entry',say:'Read out',listening:'Listening. Say the amount and what it is for.',heard:'Heard',check:'Check the details and tap Add.',micNo:'Voice input is not supported in this browser. Try Chrome on Android.',micBlock:'Microphone is blocked. Allow it in your browser settings.',micNoNum:'Could not find an amount. Say it like: 500 groceries.',micErr:'Could not hear clearly. Try again.',bkT:'Backup and restore',bkHint:'Create a backup, copy it and keep it in WhatsApp or notes. To restore, paste it here and tap Restore.',bkMake:'Create backup',bkCopy:'Copy',bkShare:'Share',bkRest:'Restore',bkMade:'Backup created. Tap Copy and save it somewhere safe.',bkCopied:'Copied.',bkNoCopy:'Could not copy. Select the text and copy it yourself.',bkNoShare:'Sharing is not available here. Use Copy.',bkBad:'This is not a valid backup.',bkDone:'entries restored',bkEmpty:'Create a backup, or paste your backup text first.'});
+Object.assign(TX.ta,{micBtn:'குரலில் சொல்லு',say:'படித்துக் காட்டு',listening:'கேட்கிறது. தொகையும் எதற்கு என்றும் சொல்லுங்கள்.',heard:'கேட்டது',check:'விவரங்களைச் சரிபார்த்து சேர் அழுத்துங்கள்.',micNo:'இந்த உலாவியில் குரல் உள்ளீடு ஆதரிக்கப்படவில்லை. Android Chrome-ஐ முயற்சிக்கவும்.',micBlock:'மைக் தடுக்கப்பட்டுள்ளது. உலாவி அமைப்பில் அனுமதிக்கவும்.',micNoNum:'தொகை கிடைக்கவில்லை. இப்படிச் சொல்லுங்கள்: 500 மளிகை.',micErr:'தெளிவாகக் கேட்கவில்லை. மீண்டும் முயற்சிக்கவும்.',bkT:'காப்புப் பிரதி மற்றும் மீட்பு',bkHint:'காப்புப் பிரதியை உருவாக்கி, நகலெடுத்து WhatsApp அல்லது குறிப்புகளில் வைத்துக்கொள்ளுங்கள். மீட்க, இங்கே ஒட்டி மீட்டெடு தட்டுங்கள்.',bkMake:'காப்புப் பிரதி உருவாக்கு',bkCopy:'நகலெடு',bkShare:'பகிர்',bkRest:'மீட்டெடு',bkMade:'காப்புப் பிரதி தயார். நகலெடுத்து பாதுகாப்பான இடத்தில் வையுங்கள்.',bkCopied:'நகலெடுக்கப்பட்டது.',bkNoCopy:'நகலெடுக்க முடியவில்லை. உரையைத் தேர்ந்து நீங்களே நகலெடுங்கள்.',bkNoShare:'இங்கே பகிர முடியாது. நகலெடு வைப் பயன்படுத்துங்கள்.',bkBad:'இது சரியான காப்புப் பிரதி அல்ல.',bkDone:'பதிவுகள் மீட்கப்பட்டன',bkEmpty:'முதலில் காப்புப் பிரதியை உருவாக்குங்கள் அல்லது உரையை ஒட்டுங்கள்.'});
+
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const micMsg=m=>{$('micMsg').textContent=m};
+const CK={
+ in:[['sal',/salary|சம்பளம்/i],['bon',/bonus|போனஸ்/i]],
+ out:[['rent',/rent|வாடகை/i],['groc',/grocer|vegetable|milk|market|மளிகை|காய்கறி|பால்/i],['bills',/bill|electric|recharge|gas|கட்டணம்|மின்|ரீசார்ஜ்|கேஸ்/i],['emi',/\bemi\b|loan|தவிணை|கடன்/i],['trans',/petrol|diesel|\bbus\b|auto|\bcab\b|uber|fuel|travel|பெட்ரோல்|டீசல்|பஸ்|ஆட்டோ|பயணம்/i],['food',/food|hotel|restaurant|swiggy|zomato|\btea\b|coffee|biryani|உணவு|ஹோட்டல்|டீ|காபி|சாப்பாடு/i],['shop',/shop|cloth|dress|amazon|flipkart|ஷாப்பிங்|துணி/i],['health',/medical|medicine|doctor|hospital|மருந்து|மருத்துவ|டாக்டர்/i],['fam',/family|school|fees|kids|குடும்பம்|பள்ளி/i]],
+ sv:[['gold',/gold|தங்கம்/i],['emg',/emergency|அவசர/i],['rd',/\brd\b|sip|chit|fund|சீட்டு/i]]
+};
+const DEF={in:'ext',out:'oth',sv:'oth'};
+function parseVoice(s){
+ const m=s.match(/(\d[\d,]*(?:\.\d+)?)\s*(k\b|thousand|ஆயிரம்|lakhs?|லட்சம்|இலட்சம்)?/i);
+ if(!m)return null;
+ let amt=parseFloat(m[1].replace(/,/g,''));
+ const u=(m[2]||'').toLowerCase();
+ if(/^(k|thousand|ஆயிரம்)/.test(u))amt*=1000;else if(/lakh|லட்சம்|இலட்சம்/.test(u))amt*=100000;
+ let ty='out';
+ if(/saving|saved|\bsave\b|\brd\b|sip|chit|gold|deposit|சேமிப்பு|சேமித்|சீட்டு|தங்கம்/i.test(s))ty='sv';
+ else if(/salary|income|received|credited|bonus|\bgot\b|சம்பளம்|வருமானம்|போனஸ்|வந்தது|கிடைத்த/i.test(s))ty='in';
+ const hit=CK[ty].find(c=>c[1].test(s));
+ let date=today();
+ if(/yesterday|நேற்று/i.test(s)){const d=new Date();d.setDate(d.getDate()-1);date=d.toLocaleDateString('en-CA')}
+ return {amt,ty,cat:hit?hit[0]:DEF[ty],date};
+}
+let rec=null;
+$('mic').onclick=()=>{
+ if(!SR){micMsg(t('micNo'));return}
+ if(rec){try{rec.stop()}catch(e){}return}
+ rec=new SR();rec.lang=S.lang==='ta'?'ta-IN':'en-IN';rec.interimResults=false;rec.maxAlternatives=1;
+ rec.onstart=()=>micMsg(t('listening'));
+ rec.onresult=e=>{
+  const s=e.results[0][0].transcript,p=parseVoice(s);
+  if(!p||!(p.amt>0)){micMsg(`${t('heard')}: ${s}. ${t('micNoNum')}`);return}
+  TY=p.ty;fillCats();$('cat').value=p.cat;$('amt').value=p.amt;$('date').value=p.date;$('note').value=s.slice(0,60);
+  render();micMsg(`${t('heard')}: ${s}. ${t('check')}`);
+ };
+ rec.onerror=e=>micMsg(e.error==='not-allowed'||e.error==='service-not-allowed'?t('micBlock'):t('micErr'));
+ rec.onend=()=>{rec=null};
+ try{rec.start()}catch(e){rec=null;micMsg(t('micErr'))}
+};
+if(!('speechSynthesis' in window))$('say').classList.add('hide');
+$('say').onclick=()=>{
+ const bal=Math.round(sum(S.items,'in')-sum(S.items,'out')-sum(S.items,'sv'));
+ const ms=Math.round(sum(S.items.filter(i=>i.date.startsWith(today().slice(0,7))),'out'));
+ const txt=S.lang==='ta'?`மொத்த கையிருப்பு ${bal} ரூபாய். இந்த மாதம் செலவு ${ms} ரூபாய்.`:`Total available balance is ${bal} rupees. This month you spent ${ms} rupees.`;
+ const u=new SpeechSynthesisUtterance(txt);u.lang=S.lang==='ta'?'ta-IN':'en-IN';
+ speechSynthesis.cancel();speechSynthesis.speak(u);
+};
+
+const bm=m=>{$('bkMsg').textContent=m};
+if(!navigator.share)$('bkShare').classList.add('hide');
+$('bkMake').onclick=()=>{$('bk').value=JSON.stringify({app:'selavu',v:1,items:S.items});$('bk').focus();$('bk').select();bm(t('bkMade'))};
+$('bkCopy').onclick=async()=>{
+ const v=$('bk').value;if(!v){bm(t('bkEmpty'));return}
+ try{await navigator.clipboard.writeText(v);bm(t('bkCopied'))}
+ catch(e){try{$('bk').select();bm(document.execCommand('copy')?t('bkCopied'):t('bkNoCopy'))}catch(e2){bm(t('bkNoCopy'))}}
+};
+$('bkShare').onclick=async()=>{
+ const v=$('bk').value;if(!v){bm(t('bkEmpty'));return}
+ try{await navigator.share({title:'Selavu backup',text:v})}catch(e){}
+};
+$('bkRest').onclick=()=>{
+ const v=$('bk').value.trim();if(!v){bm(t('bkEmpty'));return}
+ let data;try{data=JSON.parse(v)}catch(e){bm(t('bkBad'));return}
+ const arr=Array.isArray(data)?data:data&&data.items;
+ if(!Array.isArray(arr)){bm(t('bkBad'));return}
+ const have=new Set(S.items.map(i=>i.id));let n=0;
+ arr.forEach(i=>{
+  if(i&&['in','out','sv'].includes(i.type)&&+i.amt>0&&/^\d{4}-\d{2}-\d{2}$/.test(i.date||'')&&!have.has(i.id)){
+   const id=i.id||Date.now()+n;
+   S.items.push({id,type:i.type,amt:+i.amt,cat:String(i.cat||'oth'),note:String(i.note||'').slice(0,60),date:i.date});have.add(id);n++}
+ });
+ save();render();bm(`${n} ${t('bkDone')}`);
+};
+Object.assign(TX.en,{aUser:'Username',aPass:'Password',aConf:'Confirm password',aShow:'Show',aHide:'Hide',aCreate:'Create account',aLogin:'Log in',aSetupT:'Create your account',aLoginT:'Welcome back',aSetupSub:'Set a username and password to protect your records on this device.',aLoginSub:'Log in to see your money records.',aForgot:'Forgot password?',aLogout:'Log out',aErrEmpty:'Enter a username and password.',aErrShort:'Password must be at least 4 characters.',aErrMatch:'Passwords do not match.',aErrBad:'Wrong username or password.',aForgotMsg:'This deletes your account and all saved entries on this device. It cannot be undone. Delete everything?',aForgotYes:'Yes, delete and start over',aNoStore:'Your browser is not allowing data to be saved (private mode or blocked storage). You are logged in now, but the account and entries will be lost when you close this page.',aErrGen:'Something went wrong. Please try again.',aStoreWarn:'This browser is blocking storage, so your account and entries cannot be saved. If you opened this file from WhatsApp, Downloads or a file manager, open it from a web link in Chrome instead.'});
+Object.assign(TX.ta,{aUser:'பயனர் பெயர்',aPass:'கடவுச்சொல்',aConf:'கடவுச்சொல்லை உறுதிப்படுத்து',aShow:'காட்டு',aHide:'மறை',aCreate:'கணக்கை உருவாக்கு',aLogin:'உள்நுழை',aSetupT:'உங்கள் கணக்கை உருவாக்குங்கள்',aLoginT:'மீண்டும் வருக',aSetupSub:'இந்தச் சாதனத்தில் உங்கள் பதிவுகளைப் பாதுகாக்க பயனர் பெயரும் கடவுச்சொல்லும் அமைக்கவும்.',aLoginSub:'உங்கள் பணப் பதிவுகளைப் பார்க்க உள்நுழையவும்.',aForgot:'கடவுச்சொல் மறந்துவிட்டதா?',aLogout:'வெளியேறு',aErrEmpty:'பயனர் பெயரும் கடவுச்சொல்லும் உள்ளிடவும்.',aErrShort:'கடவுச்சொல் குறைந்தது 4 எழுத்துகள் இருக்க வேண்டும்.',aErrMatch:'கடவுச்சொற்கள் பொருந்தவில்லை.',aErrBad:'பயனர் பெயர் அல்லது கடவுச்சொல் தவறு.',aForgotMsg:'இது இந்தச் சாதனத்தில் உள்ள உங்கள் கணக்கையும் சேமித்த எல்லாப் பதிவுகளையும் அழிக்கும். திரும்பப் பெற முடியாது. எல்லாவற்றையும் அழிக்கவா?',aForgotYes:'ஆம், அழித்துப் புதிதாகத் தொடங்கு',aNoStore:'உங்கள் உலாவி தரவைச் சேமிக்க அனுமதிக்கவில்லை (தனிப்பட்ட பயன்முறை அல்லது தடுக்கப்பட்டுள்ளது). இப்போது உள்நுழைந்துள்ளீர்கள், ஆனால் இந்தப் பக்கத்தை மூடினால் கணக்கும் பதிவுகளும் அழியும்.',aErrGen:'ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்கவும்.',aStoreWarn:'இந்த உலாவி தரவைச் சேமிப்பதைத் தடுக்கிறது, அதனால் கணக்கையும் பதிவுகளையும் சேமிக்க முடியாது. இந்தக் கோப்பை WhatsApp, Downloads அல்லது கோப்பு மேலாளரிலிருந்து திறந்திருந்தால், Chrome-இல் இணைய இணைப்பிலிருந்து திறக்கவும்.'});
+
+/* Login. Account is stored on this device only (salted PBKDF2 hash, no server). */
+const AK='selavu-auth',SK='selavu-sess';
+let AU=null;try{AU=JSON.parse(localStorage.getItem(AK)||'null')}catch(e){}
+let aErrKey='';
+let storeOK=true;try{localStorage.setItem('selavu-t','1');storeOK=localStorage.getItem('selavu-t')==='1';localStorage.removeItem('selavu-t')}catch(e){storeOK=false}
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+const newSalt=()=>{const a=new Uint8Array(16);if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(a);else for(let i=0;i<16;i++)a[i]=Math.random()*256;return hex(a)};
+const simpleHash=(pw,salt)=>{
+ let h1=0xdeadbeef,h2=0x41c6ce57;const x=salt+pw;
+ for(let r=0;r<2000;r++)for(let i=0;i<x.length;i++){const c=x.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}
+ h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+ h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+ return (4294967296*(2097151&h2)+(h1>>>0)).toString(16);
+};
+async function pbkdf(pw,salt){
+ const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
+ return hex(await crypto.subtle.deriveBits({name:'PBKDF2',salt:new TextEncoder().encode(salt),iterations:100000,hash:'SHA-256'},k,256));
+}
+/* m = 'p' (PBKDF2) or 's' (simple fallback for browsers without WebCrypto) */
+async function hashPw(pw,salt,m){
+ if(m==='s')return simpleHash(pw,salt);
+ if(m==='p')return pbkdf(pw,salt);
+ try{
+  if(window.crypto&&crypto.subtle){
+   const h=await Promise.race([pbkdf(pw,salt),new Promise((_,rej)=>setTimeout(()=>rej(new Error('slow')),4000))]);
+   return {m:'p',h};
+  }
+ }catch(e){}
+ return {m:'s',h:simpleHash(pw,salt)};
+}
+function authRefresh(){
+ const setup=!AU;
+ $('authT').textContent=t(setup?'aSetupT':'aLoginT');
+ $('authSub').textContent=t(setup?'aSetupSub':'aLoginSub');
+ $('authBtn').textContent=t(setup?'aCreate':'aLogin');
+ $('cfWrap').classList.toggle('hide',!setup);
+ $('forgot').classList.toggle('hide',setup);
+ $('ap').autocomplete=setup?'new-password':'current-password';
+ $('apShow').textContent=$('ap').type==='password'?t('aShow'):t('aHide');
+ $('authErr').textContent=aErrKey?t(aErrKey):'';
+}
+const aErr=k=>{aErrKey=k;$('authErr').textContent=k?t(k):''};
+function showApp(){
+ try{sessionStorage.setItem(SK,'1')}catch(e){}
+ $('auth').classList.add('hide');$('app').classList.remove('hide');window.scrollTo(0,0);
+}
+function showAuth(focus){
+ try{sessionStorage.removeItem(SK)}catch(e){}
+ $('app').classList.add('hide');$('auth').classList.remove('hide');
+ $('fc').classList.add('hide');$('storeWarn').classList.toggle('hide',storeOK);
+ $('au').value=AU?AU.u:'';$('ap').value='';$('ac').value='';$('ap').type='password';
+ aErr('');authRefresh();
+ if(focus)(AU?$('ap'):$('au')).focus();
+}
+$('apShow').onclick=()=>{const p=$('ap'),c=$('ac'),show=p.type==='password';p.type=c.type=show?'text':'password';authRefresh()};
+const doAuth=async()=>{
+ const u=$('au').value.trim(),pw=$('ap').value;
+ if(!u||!pw){aErr('aErrEmpty');return}
+ if(!AU){
+  if(pw.length<4){aErr('aErrShort');return}
+  if(pw!==$('ac').value){aErr('aErrMatch');return}
+  const salt=newSalt(),r=await hashPw(pw,salt);
+  AU={u,salt,h:r.h,m:r.m};
+  let saved=true;
+  try{localStorage.setItem(AK,JSON.stringify(AU));saved=localStorage.getItem(AK)!==null}catch(e){saved=false}
+  showApp();
+  if(!saved)alert(t('aNoStore'));
+ }else{
+  const h=await hashPw(pw,AU.salt,AU.m||'p');
+  if(u.toLowerCase()===AU.u.toLowerCase()&&h===AU.h){showApp()}
+  else{aErr('aErrBad');$('ap').select()}
+ }
+};
+let busy=false;
+$('authF').onsubmit=async e=>{
+ e.preventDefault();
+ if(busy)return;busy=true;$('authBtn').disabled=true;
+ try{await doAuth()}
+ catch(err){aErrKey='';$('authErr').textContent=t('aErrGen')+' ('+(err&&err.message||err)+')'}
+ busy=false;$('authBtn').disabled=false;
+};
+$('logout').onclick=()=>showAuth(true);
+$('forgot').onclick=()=>{$('fc').classList.remove('hide');$('fcN').focus()};
+$('fcN').onclick=()=>$('fc').classList.add('hide');
+$('fcY').onclick=()=>{
+ try{localStorage.removeItem(AK)}catch(e){}
+ AU=null;S.items=[];save();render();showAuth(true);
+};
+applyLang();
+let sess=false;try{sess=sessionStorage.getItem(SK)==='1'}catch(e){}
+if(AU&&sess)showApp();else showAuth(false);
+</script>
+</body>
+</html>
