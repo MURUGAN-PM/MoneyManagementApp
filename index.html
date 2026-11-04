@@ -6,7 +6,7 @@
 <title>Money Management</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@400;500;600;700&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F3F5FA;--card:#FFFFFF;--ink:#16193A;--mute:#59607F;--line:#DCE1EE;--brand:#2B3A8C;--onBrand:#FFFFFF;--in:#1B7F55;--out:#C03A3A;--sv:#A86A0A;--track:#E6EAF4;--field:#F3F5FA;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
@@ -14,13 +14,14 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 :root[data-theme="dark"]{--bg:#0F1226;--card:#181C3A;--ink:#E9ECFA;--mute:#A3AAD0;--line:#2B3160;--brand:#8E9CFF;--onBrand:#0F1226;--in:#4CD08F;--out:#FF8585;--sv:#F2B65A;--track:#262B56;--field:#0F1226;color-scheme:dark}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hind Madurai","Noto Sans Tamil","Latha",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hind Madurai","Hind","Noto Sans Devanagari","Noto Sans Tamil","Latha",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55}
 .wrap{max-width:760px;margin:0 auto;padding:16px 16px 48px}
 header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0 16px}
 h1{font-size:1.9rem;margin:0;font-weight:700;line-height:1.1;letter-spacing:-.01em}
 header p{margin:2px 0 0;color:var(--mute);font-size:.9rem}
 h2{font-size:1.05rem;margin:0 0 12px;font-weight:700}
 .lang{border:1px solid var(--brand);background:transparent;color:var(--brand);border-radius:999px;padding:6px 16px;font:inherit;font-weight:600;cursor:pointer;min-height:40px}
+select.lang{width:auto;text-overflow:ellipsis}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
 label{display:block;font-size:.9rem;color:var(--mute);margin-bottom:4px}
 input,select{width:100%;font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
@@ -66,6 +67,7 @@ li .a{font-weight:700;white-space:nowrap}
 .reset{display:block;margin:24px auto 0;border:0;background:transparent;color:var(--mute);font-size:.85rem;text-decoration:underline;cursor:pointer;padding:8px}
 .sec{background:var(--track);color:var(--ink)}
 .mic{display:flex;align-items:center;justify-content:center;gap:8px}
+.mic.on{background:var(--out);color:#fff}
 .mini{border:1px solid var(--brand);background:transparent;color:var(--brand);border-radius:999px;font-weight:600;padding:6px 14px;min-height:40px;cursor:pointer}
 .hide{display:none}
 .authWrap{max-width:420px;margin:0 auto;padding:16px 16px 48px;min-height:100vh}
@@ -84,7 +86,7 @@ li .a{font-weight:700;white-space:nowrap}
 </head>
 <body>
 <div id="auth" class="authWrap hide">
-  <div class="authTop"><button class="lang" id="langBtn2" type="button">English</button></div>
+  <div class="authTop"><select class="lang" id="langBtn2" aria-label="Language"><option value="ta">தமிழ்</option><option value="en">English</option><option value="hi">हिन्दी</option></select></div>
   <div class="authBox">
     <div class="logo" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v2"/><path d="M3 7v11a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14.5" r="1.2" fill="currentColor"/></svg></div>
     <h1 data-i18n="title">Money Management</h1>
@@ -117,7 +119,7 @@ li .a{font-weight:700;white-space:nowrap}
     <h1 data-i18n="title">Money Management</h1>
     <p data-i18n="sub">Income, spending and savings in one place</p>
   </div>
-  <div class="hbtns"><button class="lang" id="langBtn" type="button">English</button><button class="lang" id="logout" type="button" data-i18n="aLogout">Log out</button></div>
+  <div class="hbtns"><select class="lang" id="langBtn" aria-label="Language"><option value="ta">தமிழ்</option><option value="en">English</option><option value="hi">हिन्दी</option></select><button class="lang" id="logout" type="button" data-i18n="aLogout">Log out</button></div>
 </header>
 
 <section class="card" style="border:2px solid var(--brand)" aria-live="polite">
@@ -219,14 +221,15 @@ li .a{font-weight:700;white-space:nowrap}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const CATS={
- in:[['sal','சம்பளம்','Salary'],['bon','போனஸ்','Bonus'],['ext','கூடுதல் வருமானம்','Extra income'],['oth','மற்றவை','Other']],
- out:[['rent','வாடகை','Rent'],['groc','மளிகை','Groceries'],['bills','கட்டணங்கள்','Bills'],['emi','EMI தவணை','EMI'],['trans','போக்குவரத்து','Transport'],['food','வெளியில் உணவு','Eating out'],['shop','ஷாப்பிங்','Shopping'],['health','மருத்துவம்','Health'],['fam','குடும்பம்','Family'],['oth','மற்றவை','Other']],
- sv:[['rd','RD / SIP / சீட்டு','RD / SIP / Chit'],['gold','தங்கம்','Gold'],['emg','அவசர நிதி','Emergency fund'],['oth','மற்றவை','Other']]
+ in:[['sal','சம்பளம்','Salary','वेतन'],['bon','போனஸ்','Bonus','बोनस'],['ext','கூடுதல் வருமானம்','Extra income','अतिरिक्त आय'],['oth','மற்றவை','Other','अन्य']],
+ out:[['rent','வாடகை','Rent','किराया'],['groc','மளிகை','Groceries','किराना'],['bills','கட்டணங்கள்','Bills','बिल'],['emi','EMI தவணை','EMI','EMI किस्त'],['trans','போக்குவரத்து','Transport','यात्रा'],['food','வெளியில் உணவு','Eating out','बाहर खाना'],['shop','ஷாப்பிங்','Shopping','खरीदारी'],['health','மருத்துவம்','Health','स्वास्थ्य'],['fam','குடும்பம்','Family','परिवार'],['oth','மற்றவை','Other','अन्य']],
+ sv:[['rd','RD / SIP / சீட்டு','RD / SIP / Chit','RD / SIP / चिट'],['gold','தங்கம்','Gold','सोना'],['emg','அவசர நிதி','Emergency fund','आपातकालीन निधि'],['oth','மற்றவை','Other','अन्य']]
 };
 const TX={
  en:{sub:'Income, deductions and savings in one place',add:'Add entry',income:'Income',out:'Deductions',sv:'Savings',amount:'Amount (₹)',category:'Category',date:'Date',note:'Note',addBtn:'Add',day:'Day',month:'Month',year:'Year',balance:'Balance',tap:'Tap a row to open it.',byCat:'Where deductions went',list:'Entries',reset:'Clear all data',confirm:'Delete all saved data on this device?',del:'Delete',empty:'No entries for this period. Add one above.',noCat:'No deductions in this period.',byDay:'Day by day',byMonth:'Month by month',tDay:'Day',tMonth:'Month',tIn:'Income',tOut:'Deducted',tSv:'Saved',typeIn:'Income',typeOut:'Deduction',typeSv:'Saving'},
  ta:{sub:'வருமானம், கழிவுகள், சேமிப்பு ஒரே இடத்தில்',add:'பதிவைச் சேர்',income:'வருமானம்',out:'கழிவுகள்',sv:'சேமிப்பு',amount:'தொகை (₹)',category:'வகை',date:'தேதி',note:'குறிப்பு',addBtn:'சேர்',day:'நாள்',month:'மாதம்',year:'வருடம்',balance:'மீதம்',tap:'ஒரு வரியைத் தொட்டால் திறக்கும்.',byCat:'கழிவுகள் எங்கே போயின',list:'பதிவுகள்',reset:'எல்லா தரவையும் அழி',confirm:'இந்தச் சாதனத்தில் சேமித்த எல்லா தரவையும் அழிக்கவா?',del:'நீக்கு',empty:'இந்தக் காலத்துக்கு பதிவுகள் இல்லை. மேலே ஒன்றைச் சேர்க்கவும்.',noCat:'இந்தக் காலத்தில் கழிவுகள் இல்லை.',byDay:'நாள் வாரியாக',byMonth:'மாதம் வாரியாக',tDay:'நாள்',tMonth:'மாதம்',tIn:'வருமானம்',tOut:'கழிவு',tSv:'சேமிப்பு',typeIn:'வருமானம்',typeOut:'கழிவு',typeSv:'சேமிப்பு'}
 };
+TX.hi={};
 Object.assign(TX.en,{sub:'Income, spending and savings in one place',out:'Spend',byCat:'Where your spending went',noCat:'No spending in this period.',tOut:'Spent',typeOut:'Spend'});
 Object.assign(TX.ta,{sub:'வருமானம், செலவு, சேமிப்பு ஒரே இடத்தில்',out:'செலவு',byCat:'செலவு எங்கே போனது',noCat:'இந்தக் காலத்தில் செலவுகள் இல்லை.',tOut:'செலவு',typeOut:'செலவு'});
 Object.assign(TX.en,{title:'Money Management',allYears:'All years',yes:'Yes, delete all',cancel:'Cancel',totalBal:'Total available balance',totalSv:'Total saved',balance:'Balance for this period'});
@@ -252,12 +255,13 @@ let S={lang:'ta',items:[]};
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
 const $=id=>document.getElementById(id);
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}cloudPush()};
-const t=k=>TX[S.lang][k];
-const loc=()=>S.lang==='ta'?'ta-IN':'en-IN';
+const t=k=>(TX[S.lang]&&TX[S.lang][k])??TX.en[k];
+const loc=()=>({ta:'ta-IN',en:'en-IN',hi:'hi-IN'}[S.lang]||'en-IN');
+const ci=()=>({ta:1,en:2,hi:3}[S.lang]||2);
 const fmt=n=>(n<0?'-':'')+'₹'+Math.round(Math.abs(n)).toLocaleString('en-IN');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const today=()=>new Date().toLocaleDateString('en-CA');
-const cname=(ty,id)=>{const c=CATS[ty].find(c=>c[0]===id)||CATS[ty][CATS[ty].length-1];return c[S.lang==='ta'?1:2]};
+const cname=(ty,id)=>{const c=CATS[ty].find(c=>c[0]===id)||CATS[ty][CATS[ty].length-1];return c[ci()]};
 const dl=(d,y)=>new Date(d+'T00:00:00').toLocaleDateString(loc(),y?{day:'numeric',month:'short',year:'numeric'}:{day:'numeric',month:'short'});
 const ml=(k,y)=>new Date(+k.slice(0,4),+k.slice(5,7)-1,1).toLocaleDateString(loc(),y?{month:'long',year:'numeric'}:{month:'long'});
 
@@ -271,7 +275,7 @@ const sum=(a,ty)=>a.filter(i=>i.type===ty).reduce((s,i)=>s+i.amt,0);
 
 function fillCats(){
   const cur=$('cat').value;
-  $('cat').innerHTML=CATS[TY].map(c=>`<option value="${c[0]}">${c[S.lang==='ta'?1:2]}</option>`).join('');
+  $('cat').innerHTML=CATS[TY].map(c=>`<option value="${c[0]}">${c[ci()]}</option>`).join('');
   if(CATS[TY].some(c=>c[0]===cur))$('cat').value=cur;
 }
 
@@ -279,7 +283,7 @@ function applyLang(){
   document.documentElement.lang=S.lang;
   document.title=t('title');
   document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));
-  $('langBtn').textContent=$('langBtn2').textContent=S.lang==='ta'?'English':'தமிழ்';
+  $('langBtn').value=$('langBtn2').value=S.lang;
   authRefresh();
   fillCats();render();
 }
@@ -331,7 +335,7 @@ function render(){
   }).join(''):`<li><p class="empty">${t('empty')}</p></li>`;
 }
 
-$('langBtn').onclick=$('langBtn2').onclick=()=>{S.lang=S.lang==='ta'?'en':'ta';save();applyLang()};
+$('langBtn').onchange=$('langBtn2').onchange=e=>{S.lang=e.target.value;save();applyLang()};
 $('types').onclick=e=>{const b=e.target.closest('button');if(!b)return;TY=b.dataset.t;fillCats();render()};
 $('modes').onclick=e=>{const b=e.target.closest('button');if(!b)return;V.mode=b.dataset.m;render()};
 $('pDay').oninput=e=>{if(!e.target.value)return;V.day=e.target.value;V.month=V.day.slice(0,7);V.year=V.day.slice(0,4);render()};
@@ -366,47 +370,94 @@ Object.assign(TX.ta,{micBtn:'குரலில் சொல்லு',say:'ப�
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 const micMsg=m=>{$('micMsg').textContent=m};
 const CK={
- in:[['sal',/salary|சம்பளம்/i],['bon',/bonus|போனஸ்/i]],
- out:[['rent',/rent|வாடகை/i],['groc',/grocer|vegetable|milk|market|மளிகை|காய்கறி|பால்/i],['bills',/bill|electric|recharge|gas|கட்டணம்|மின்|ரீசார்ஜ்|கேஸ்/i],['emi',/\bemi\b|loan|தவிணை|கடன்/i],['trans',/petrol|diesel|\bbus\b|auto|\bcab\b|uber|fuel|travel|பெட்ரோல்|டீசல்|பஸ்|ஆட்டோ|பயணம்/i],['food',/food|hotel|restaurant|swiggy|zomato|\btea\b|coffee|biryani|உணவு|ஹோட்டல்|டீ|காபி|சாப்பாடு/i],['shop',/shop|cloth|dress|amazon|flipkart|ஷாப்பிங்|துணி/i],['health',/medical|medicine|doctor|hospital|மருந்து|மருத்துவ|டாக்டர்/i],['fam',/family|school|fees|kids|குடும்பம்|பள்ளி/i]],
- sv:[['gold',/gold|தங்கம்/i],['emg',/emergency|அவசர/i],['rd',/\brd\b|sip|chit|fund|சீட்டு/i]]
+ in:[['sal',/salary|சம்பளம்|वेतन|सैलरी/i],['bon',/bonus|போனஸ்|बोनस/i]],
+ out:[['rent',/rent|வாடகை|किराया/i],['groc',/grocer|vegetable|milk|market|மளிகை|காய்கறி|பால்|किराना|सब्जी|दूध|राशन/i],['bills',/bill|electric|recharge|gas|கட்டணம்|மின்|ரீசார்ஜ்|கேஸ்|बिल|बिजली|रिचार्ज|गैस/i],['emi',/\bemi\b|loan|தவிணை|கடன்|ईएमआई|किस्त|कर्ज|लोन/i],['trans',/petrol|diesel|\bbus\b|auto|\bcab\b|uber|fuel|travel|பெட்ரோல்|டீசல்|பஸ்|ஆட்டோ|பயணம்|पेट्रोल|डीजल|बस|ऑटो|यात्रा|सफर/i],['food',/food|hotel|restaurant|swiggy|zomato|\btea\b|coffee|biryani|உணவு|ஹோட்டல்|டீ|காபி|சாப்பாடு|खाना|होटल|चाय|कॉफी|बिरयानी|रेस्टोरेंट/i],['shop',/shop|cloth|dress|amazon|flipkart|ஷாப்பிங்|துணி|शॉपिंग|खरीदारी|कपड़े/i],['health',/medical|medicine|doctor|hospital|மருந்து|மருத்துவ|டாக்டர்|दवा|दवाई|डॉक्टर|अस्पताल/i],['fam',/family|school|fees|kids|குடும்பம்|பள்ளி|परिवार|स्कूल|फीस|बच्चे/i]],
+ sv:[['gold',/gold|தங்கம்|सोना|सोने/i],['emg',/emergency|அவசர|आपातकालीन|इमरजेंसी/i],['rd',/\brd\b|sip|chit|fund|சீட்டு|फंड|चिट|आरडी|एसआईपी/i]]
 };
 const DEF={in:'ext',out:'oth',sv:'oth'};
 function parseVoice(s){
- const m=s.match(/(\d[\d,]*(?:\.\d+)?)\s*(k\b|thousand|ஆயிரம்|lakhs?|லட்சம்|இலட்சம்)?/i);
+ const m=s.match(/(\d[\d,]*(?:\.\d+)?)\s*(k\b|thousand|ஆயிரம்|हज़ार|हजार|lakhs?|லட்சம்|இலட்சம்|लाख)?/i);
  if(!m)return null;
  let amt=parseFloat(m[1].replace(/,/g,''));
  const u=(m[2]||'').toLowerCase();
- if(/^(k|thousand|ஆயிரம்)/.test(u))amt*=1000;else if(/lakh|லட்சம்|இலட்சம்/.test(u))amt*=100000;
+ if(/^(k|thousand|ஆயிரம்|हज़ार|हजार)/.test(u))amt*=1000;else if(/lakh|லட்சம்|இலட்சம்|लाख/.test(u))amt*=100000;
  let ty='out';
- if(/saving|saved|\bsave\b|\brd\b|sip|chit|gold|deposit|சேமிப்பு|சேமித்|சீட்டு|தங்கம்/i.test(s))ty='sv';
- else if(/salary|income|received|credited|bonus|\bgot\b|சம்பளம்|வருமானம்|போனஸ்|வந்தது|கிடைத்த/i.test(s))ty='in';
+ if(/saving|saved|\bsave\b|\brd\b|sip|chit|gold|deposit|சேமிப்பு|சேமித்|சீட்டு|தங்கம்|बचत|जमा|सोना|सोने/i.test(s))ty='sv';
+ else if(/salary|income|received|credited|bonus|\bgot\b|சம்பளம்|வருமானம்|போனஸ்|வந்தது|கிடைத்த|वेतन|सैलरी|आमदनी|आय|बोनस|मिला|आया/i.test(s))ty='in';
  const hit=CK[ty].find(c=>c[1].test(s));
  let date=today();
- if(/yesterday|நேற்று/i.test(s)){const d=new Date();d.setDate(d.getDate()-1);date=d.toLocaleDateString('en-CA')}
+ if(/yesterday|நேற்று|(^|\s)कल(\s|$)/i.test(s)){const d=new Date();d.setDate(d.getDate()-1);date=d.toLocaleDateString('en-CA')}
  return {amt,ty,cat:hit?hit[0]:DEF[ty],date};
 }
-let rec=null;
+/*W1*/
+const NW=Object.create(null),MUL=Object.create(null);
+const addN=(v,ws)=>ws.split(' ').forEach(w=>{NW[w.normalize('NFC')]=v});
+const addM=(v,ws)=>ws.split(' ').forEach(w=>{MUL[w.normalize('NFC')]=v});
+addN(0,'zero शून्य');
+addN(1,'one एक ஒன்று ஒரு');addN(2,'two दो இரண்டு');addN(3,'three तीन மூன்று');addN(4,'four चार நான்கு');addN(5,'five पांच पाँच ஐந்து');
+addN(6,'six छह छः छे छ');addN(7,'seven सात ஏழு');addN(8,'eight आठ எட்டு');addN(9,'nine नौ ஒன்பது');addN(10,'ten दस பத்து');
+addN(11,'eleven ग्यारह பதினொன்று');addN(12,'twelve बारह பன்னிரண்டு');addN(13,'thirteen तेरह பதிமூன்று');addN(14,'fourteen चौदह பதினான்கு');addN(15,'fifteen पंद्रह पन्द्रह பதினைந்து');
+addN(16,'sixteen सोलह பதினாறு');addN(17,'seventeen सत्रह பதினேழு');addN(18,'eighteen अठारह பதினெட்டு');addN(19,'nineteen उन्नीस பத்தொன்பது');
+addN(20,'twenty बीस இருபது');addN(30,'thirty तीस முப்பது');addN(40,'forty चालीस நாற்பது');addN(50,'fifty पचास ஐம்பது');addN(60,'sixty साठ அறுபது');addN(70,'seventy सत्तर எழுபது');addN(80,'eighty अस्सी எண்பது');addN(90,'ninety नब्बे தொண்ணூறு');
+const HI='इक्कीस बाईस तेईस चौबीस पच्चीस छब्बीस सत्ताईस अट्ठाईस|अठाईस उनतीस|उन्तीस;इकतीस बत्तीस तैंतीस चौंतीस पैंतीस छत्तीस सैंतीस अड़तीस उनतालीस|उन्तालीस;इकतालीस बयालीस तैंतालीस चौवालीस|चवालीस पैंतालीस छियालीस सैंतालीस अड़तालीस उनचास;इक्यावन बावन तिरपन|तिरेपन चौवन पचपन छप्पन सत्तावन अट्ठावन|अठावन उनसठ;इकसठ बासठ तिरसठ चौंसठ पैंसठ छियासठ सड़सठ अड़सठ उनहत्तर;इकहत्तर बहत्तर तिहत्तर चौहत्तर पचहत्तर छिहत्तर सतहत्तर अठहत्तर उनासी|उन्यासी;इक्यासी बयासी तिरासी चौरासी पचासी छियासी सत्तासी अट्ठासी|अठासी नवासी;इक्यानवे बानवे तिरानवे चौरानवे पचानवे छियानवे सत्तानवे अट्ठानवे|अठानवे निन्यानवे';
+HI.split(';').forEach((row,r)=>row.split(' ').forEach((cell,i)=>cell.split('|').forEach(w=>{NW[w.normalize('NFC')]=(r+2)*10+i+1})));
+addN(1.5,'डेढ़ डेढ');addN(2.5,'ढाई');
+addN(100,'நூறு');addN(200,'இருநூறு இருநூற்று');addN(300,'முன்னூறு முந்நூறு முன்னூற்று');addN(400,'நானூறு நானூற்று');addN(500,'ஐநூறு ஐந்நூறு ஐநூற்று');addN(600,'அறுநூறு அறுநூற்று');addN(700,'எழுநூறு எழுநூற்று');addN(800,'எண்ணூறு எண்ணூற்று');addN(900,'தொள்ளாயிரம்');
+addN(2000,'இரண்டாயிரம்');addN(3000,'மூவாயிரம்');addN(4000,'நாலாயிரம் நான்காயிரம்');addN(5000,'ஐயாயிரம்');addN(6000,'ஆறாயிரம்');addN(7000,'ஏழாயிரம்');addN(8000,'எட்டாயிரம்');addN(9000,'ஒன்பதாயிரம்');addN(10000,'பத்தாயிரம்');
+addM(100,'hundred सौ');addM(1000,'thousand हज़ार हजार ஆயிரம் ஆயிரத்து');addM(100000,'lakh lakhs lac lacs लाख லட்சம் இலட்சம்');
+delete NW['நூறு'];addM(100,'நூறு');
+function wordsToNum(s){
+ const tk=String(s).normalize('NFC').toLowerCase().replace(/[.,!?।]/g,' ').split(/\s+/).filter(Boolean);
+ let total=0,cur=0,seen=false;
+ for(const w of tk){
+  if(w in MUL){seen=true;const m=MUL[w];if(m===100)cur=(cur||1)*100;else{total+=(cur||1)*m;cur=0}}
+  else if(w in NW){seen=true;cur+=NW[w]}
+ }
+ return seen?Math.round(total+cur):0;
+}
+/*W2*/
+function parseAny(alts){
+ const L=alts.map(x=>String(x||'').normalize('NFC'));
+ for(const s of L){const p=parseVoice(s);if(p&&p.amt>0)return{p,s}}
+ for(const s of L){const n=wordsToNum(s);if(n>0){const p=parseVoice(s+' '+n);if(p)return{p,s}}}
+ return null;
+}
+Object.assign(TX.en,{micNoSpeech:'Did not hear anything. Tap Speak entry and try again.',micNoMic:'No microphone found.',micLang:'This browser does not support voice input in this language. Switch language or type the entry.',micHttps:'Voice input needs the page to be opened from a secure web link (https), not as a file.',micStop:'Stop'});
+Object.assign(TX.ta,{micNoSpeech:'எதுவும் கேட்கவில்லை. குரலில் சொல்லு தட்டி மீண்டும் முயற்சிக்கவும்.',micNoMic:'மைக் கிடைக்கவில்லை.',micLang:'இந்த உலாவி இந்த மொழியில் குரல் உள்ளீட்டை ஆதரிக்கவில்லை. மொழியை மாற்றவும் அல்லது தட்டச்சு செய்யவும்.',micHttps:'குரல் உள்ளீட்டுக்கு பக்கத்தை பாதுகாப்பான இணைய இணைப்பிலிருந்து (https) திறக்க வேண்டும், கோப்பாக அல்ல.',micStop:'நிறுத்து'});
+Object.assign(TX.hi,{micNoSpeech:'कुछ सुनाई नहीं दिया। बोलकर जोड़ें दबाकर फिर कोशिश करें।',micNoMic:'माइक्रोफ़ोन नहीं मिला।',micLang:'यह ब्राउज़र इस भाषा में वॉइस इनपुट का समर्थन नहीं करता। भाषा बदलें या हाथ से लिखें।',micHttps:'वॉइस इनपुट के लिए पेज सुरक्षित वेब लिंक (https) से खुलना चाहिए, फ़ाइल के रूप में नहीं।',micStop:'रोकें'});
+const micErrMsg=c=>c==='not-allowed'||c==='service-not-allowed'?t('micBlock'):c==='network'?t('aErrNet'):c==='no-speech'?t('micNoSpeech'):c==='audio-capture'?t('micNoMic'):c==='language-not-supported'?t('micLang'):t('micErr');
+let rec=null,recGot=false;
+const micUI=on=>{const b=$('mic');b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);b.querySelector('span').textContent=on?t('micStop'):t('micBtn')};
 $('mic').onclick=()=>{
  if(!SR){micMsg(t('micNo'));return}
+ if(!window.isSecureContext){micMsg(t('micHttps'));return}
  if(rec){try{rec.stop()}catch(e){}return}
- rec=new SR();rec.lang=S.lang==='ta'?'ta-IN':'en-IN';rec.interimResults=false;rec.maxAlternatives=1;
- rec.onstart=()=>micMsg(t('listening'));
- rec.onresult=e=>{
-  const s=e.results[0][0].transcript,p=parseVoice(s);
-  if(!p||!(p.amt>0)){micMsg(`${t('heard')}: ${s}. ${t('micNoNum')}`);return}
+ const r=new SR();rec=r;recGot=false;
+ r.lang=loc();r.interimResults=true;r.maxAlternatives=3;r.continuous=false;
+ r.onstart=()=>{micUI(true);micMsg(t('listening'))};
+ r.onresult=e=>{
+  let fin=false,txt='';
+  for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)fin=true;txt=e.results[i][0].transcript}
+  if(!fin){micMsg(t('heard')+': '+txt+' …');return}
+  recGot=true;
+  const res=e.results[e.results.length-1],alts=[];
+  for(let i=0;i<res.length;i++)alts.push(res[i].transcript);
+  const hit=parseAny(alts);
+  if(!hit){micMsg(`${t('heard')}: ${alts[0]}. ${t('micNoNum')}`);return}
+  const{p,s}=hit;
   TY=p.ty;fillCats();$('cat').value=p.cat;$('amt').value=p.amt;$('date').value=p.date;$('note').value=s.slice(0,60);
   render();micMsg(`${t('heard')}: ${s}. ${t('check')}`);
  };
- rec.onerror=e=>micMsg(e.error==='not-allowed'||e.error==='service-not-allowed'?t('micBlock'):t('micErr'));
- rec.onend=()=>{rec=null};
- try{rec.start()}catch(e){rec=null;micMsg(t('micErr'))}
+ r.onerror=e=>{recGot=true;micMsg(micErrMsg(e.error))};
+ r.onend=()=>{micUI(false);if(rec===r)rec=null;if(!recGot)micMsg(t('micNoSpeech'))};
+ try{r.start()}catch(e){rec=null;micUI(false);micMsg(t('micErr'))}
 };
 if(!('speechSynthesis' in window))$('say').classList.add('hide');
 $('say').onclick=()=>{
  const bal=Math.round(sum(S.items,'in')-sum(S.items,'out')-sum(S.items,'sv'));
  const ms=Math.round(sum(S.items.filter(i=>i.date.startsWith(today().slice(0,7))),'out'));
- const txt=S.lang==='ta'?`மொத்த கையிருப்பு ${bal} ரூபாய். இந்த மாதம் செலவு ${ms} ரூபாய்.`:`Total available balance is ${bal} rupees. This month you spent ${ms} rupees.`;
- const u=new SpeechSynthesisUtterance(txt);u.lang=S.lang==='ta'?'ta-IN':'en-IN';
+ const txt=S.lang==='ta'?`மொத்த கையிருப்பு ${bal} ரூபாய். இந்த மாதம் செலவு ${ms} ரூபாய்.`:S.lang==='hi'?`कुल उपलब्ध शेष ${bal} रुपये है। इस महीने आपने ${ms} रुपये खर्च किए।`:`Total available balance is ${bal} rupees. This month you spent ${ms} rupees.`;
+ const u=new SpeechSynthesisUtterance(txt);u.lang=loc();
  speechSynthesis.cancel();speechSynthesis.speak(u);
 };
 
@@ -527,12 +578,18 @@ $('fcY').onclick=()=>{
  try{localStorage.removeItem(AK)}catch(e){}
  AU=null;S.items=[];save();render();showAuth(true);
 };
+Object.assign(TX.hi,{sub:'आय, खर्च और बचत एक ही जगह',add:'प्रविष्टि जोड़ें',income:'आय',out:'खर्च',sv:'बचत',amount:'राशि (₹)',category:'श्रेणी',date:'तारीख',note:'टिप्पणी',addBtn:'जोड़ें',day:'दिन',month:'महीना',year:'साल',balance:'इस अवधि का शेष',tap:'किसी पंक्ति को खोलने के लिए उस पर टैप करें।',byCat:'खर्च कहाँ गया',list:'प्रविष्टियाँ',reset:'सारा डेटा हटाएँ',confirm:'इस डिवाइस पर सहेजा गया सारा डेटा हटाएँ?',del:'हटाएँ',empty:'इस अवधि की कोई प्रविष्टि नहीं है। ऊपर से एक जोड़ें।',noCat:'इस अवधि में कोई खर्च नहीं है।',byDay:'दिन के अनुसार',byMonth:'महीने के अनुसार',tDay:'दिन',tMonth:'महीना',tIn:'आय',tOut:'खर्च',tSv:'बचत',typeIn:'आय',typeOut:'खर्च',typeSv:'बचत',title:'धन प्रबंधन',allYears:'सभी साल',yes:'हाँ, सब हटाएँ',cancel:'रद्द करें',totalBal:'कुल उपलब्ध शेष',totalSv:'कुल बचत',
+micBtn:'बोलकर जोड़ें',say:'पढ़कर सुनाएँ',listening:'सुन रहा है। राशि और किसके लिए है, बोलें।',heard:'सुना',check:'विवरण जाँचें और जोड़ें दबाएँ।',micNo:'इस ब्राउज़र में वॉइस इनपुट समर्थित नहीं है। Android पर Chrome आज़माएँ।',micBlock:'माइक्रोफ़ोन अवरुद्ध है। ब्राउज़र सेटिंग में अनुमति दें।',micNoNum:'राशि नहीं मिली। ऐसे बोलें: 500 किराना।',micErr:'साफ़ सुनाई नहीं दिया। फिर से कोशिश करें।',
+bkT:'बैकअप और रिस्टोर',bkHint:'बैकअप बनाएँ, कॉपी करें और WhatsApp या नोट्स में रख लें। रिस्टोर करने के लिए उसे यहाँ पेस्ट करके रिस्टोर दबाएँ।',bkMake:'बैकअप बनाएँ',bkCopy:'कॉपी करें',bkShare:'शेयर करें',bkRest:'रिस्टोर करें',bkMade:'बैकअप तैयार है। कॉपी दबाकर सुरक्षित जगह रखें।',bkCopied:'कॉपी हो गया।',bkNoCopy:'कॉपी नहीं हो सका। टेक्स्ट चुनकर खुद कॉपी करें।',bkNoShare:'यहाँ शेयर करना उपलब्ध नहीं है। कॉपी का उपयोग करें।',bkBad:'यह मान्य बैकअप नहीं है।',bkDone:'प्रविष्टियाँ रिस्टोर हुईं',bkEmpty:'पहले बैकअप बनाएँ या बैकअप टेक्स्ट पेस्ट करें।',
+aUser:'उपयोगकर्ता नाम',aPass:'पासवर्ड',aConf:'पासवर्ड की पुष्टि करें',aShow:'दिखाएँ',aHide:'छिपाएँ',aCreate:'खाता बनाएँ',aLogin:'लॉग इन करें',aSetupT:'अपना खाता बनाएँ',aLoginT:'वापसी पर स्वागत है',aSetupSub:'इस डिवाइस पर अपने रिकॉर्ड सुरक्षित रखने के लिए उपयोगकर्ता नाम और पासवर्ड सेट करें।',aLoginSub:'अपने धन के रिकॉर्ड देखने के लिए लॉग इन करें।',aForgot:'पासवर्ड भूल गए?',aLogout:'लॉग आउट',aErrEmpty:'उपयोगकर्ता नाम और पासवर्ड दर्ज करें।',aErrShort:'पासवर्ड कम से कम 4 अक्षरों का होना चाहिए।',aErrMatch:'पासवर्ड मेल नहीं खाते।',aErrBad:'उपयोगकर्ता नाम या पासवर्ड गलत है।',aForgotMsg:'इससे इस डिवाइस पर आपका खाता और सहेजी गई सभी प्रविष्टियाँ हट जाएँगी। इसे वापस नहीं किया जा सकता। सब कुछ हटाएँ?',aForgotYes:'हाँ, हटाकर नए सिरे से शुरू करें',aNoStore:'आपका ब्राउज़र डेटा सहेजने की अनुमति नहीं दे रहा (प्राइवेट मोड या स्टोरेज अवरुद्ध)। आप अभी लॉग इन हैं, लेकिन यह पेज बंद करने पर खाता और प्रविष्टियाँ मिट जाएँगी।',aErrGen:'कुछ गलत हो गया। कृपया फिर से कोशिश करें।',aStoreWarn:'यह ब्राउज़र स्टोरेज को अवरुद्ध कर रहा है, इसलिए आपका खाता और प्रविष्टियाँ सहेजी नहीं जा सकतीं। अगर आपने यह फ़ाइल WhatsApp, Downloads या फ़ाइल मैनेजर से खोली है, तो इसे Chrome में वेब लिंक से खोलें।',
+aToSignup:'नए हैं? खाता बनाएँ',aToLogin:'पहले से खाता है? लॉग इन करें',aErrEmail:'सही ईमेल पता दर्ज करें।',aErrExists:'इस ईमेल का खाता पहले से है। कृपया लॉग इन करें।',aErrNet:'इंटरनेट कनेक्शन नहीं है। कृपया फिर से कोशिश करें।',aResetSent:'पासवर्ड रीसेट ईमेल भेज दिया गया है। अपना इनबॉक्स देखें।',aSyncErr:'क्लाउड से सिंक नहीं हो सका। आपका डेटा इस डिवाइस पर सुरक्षित है।'});
 /* ===== Firebase: Auth (email + password) and Firestore sync (users/{uid}) ===== */
 Object.assign(TX.en,{aToSignup:'New here? Create account',aToLogin:'Already have an account? Log in',aErrEmail:'Enter a valid email address.',aErrExists:'This email already has an account. Log in instead.',aErrNet:'No internet connection. Please try again.',aResetSent:'Password reset email sent. Check your inbox.',aSyncErr:'Could not sync with the cloud. Your data is safe on this device.'});
 Object.assign(TX.ta,{aToSignup:'புதியவரா? கணக்கை உருவாக்குங்கள்',aToLogin:'ஏற்கனவே கணக்கு உள்ளதா? உள்நுழையுங்கள்',aErrEmail:'சரியான மின்னஞ்சல் முகவரியை உள்ளிடவும்.',aErrExists:'இந்த மின்னஞ்சலுக்கு ஏற்கனவே கணக்கு உள்ளது. உள்நுழையவும்.',aErrNet:'இணைய இணைப்பு இல்லை. மீண்டும் முயற்சிக்கவும்.',aResetSent:'கடவுச்சொல் மீட்பு மின்னஞ்சல் அனுப்பப்பட்டது. இன்பாக்ஸைப் பாருங்கள்.',aSyncErr:'கிளவுடுடன் ஒத்திசைக்க முடியவில்லை. தரவு இந்தச் சாதனத்தில் பாதுகாப்பாக உள்ளது.'});
 if(FB_ON&&fbAuth){
  Object.assign(TX.en,{aUser:'Email',aErrShort:'Password must be at least 6 characters.',aSetupSub:'Create an account to keep your records safe and available on all your devices.',aLoginSub:'Log in to see your money records.',aForgotMsg:''});
  Object.assign(TX.ta,{aUser:'மின்னஞ்சல்',aErrShort:'கடவுச்சொல் குறைந்தது 6 எழுத்துகள் இருக்க வேண்டும்.',aSetupSub:'உங்கள் பதிவுகளைப் பாதுகாக்கவும் எல்லாச் சாதனங்களிலும் பார்க்கவும் கணக்கை உருவாக்குங்கள்.',aLoginSub:'உங்கள் பணப் பதிவுகளைப் பார்க்க உள்நுழையவும்.',aForgotMsg:''});
+ Object.assign(TX.hi,{aUser:'ईमेल',aErrShort:'पासवर्ड कम से कम 6 अक्षरों का होना चाहिए।',aSetupSub:'अपने रिकॉर्ड सुरक्षित रखने और सभी डिवाइस पर देखने के लिए खाता बनाएँ।',aForgotMsg:''});
  $('au').type='email';$('au').inputMode='email';$('au').autocomplete='email';
 }
 function cloudPush(){
@@ -549,7 +606,7 @@ async function cloudPull(){
  const ref=fbDb.collection('users').doc(fbUser.uid),d=await ref.get();
  const c=d.exists?d.data():null;
  if(c&&Array.isArray(c.items)){
-  S.items=c.items;if(c.lang==='ta'||c.lang==='en')S.lang=c.lang;
+  S.items=c.items;if(TX[c.lang])S.lang=c.lang;
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
   applyLang();
  }else{
