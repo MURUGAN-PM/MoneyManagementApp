@@ -100,6 +100,7 @@ li .a{font-weight:700;white-space:nowrap}
     </form>
     <p class="hint hide" id="storeWarn" role="status" data-i18n="aStoreWarn" style="color:var(--out);text-align:left"></p>
     <button class="lnk hide" id="forgot" type="button" data-i18n="aForgot">Forgot password?</button>
+    <button class="lnk hide" id="fbSwitch" type="button"></button>
     <div class="card hide" id="fc" role="alertdialog" aria-labelledby="fcT" style="text-align:left">
       <p id="fcT" data-i18n="aForgotMsg" style="margin:0 0 12px"></p>
       <div style="display:flex;gap:10px">
@@ -213,6 +214,9 @@ li .a{font-weight:700;white-space:nowrap}
 </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const CATS={
  in:[['sal','சம்பளம்','Salary'],['bon','போனஸ்','Bonus'],['ext','கூடுதல் வருமானம்','Extra income'],['oth','மற்றவை','Other']],
@@ -230,11 +234,24 @@ Object.assign(TX.ta,{totalBal:'மொத்த கையிருப்பு',t
 Object.assign(TX.ta,{yes:'ஆம், எல்லாவற்றையும் அழி',cancel:'ரத்து'});
 Object.assign(TX.ta,{allYears:'எல்லா வருடங்கள்'});
 Object.assign(TX.ta,{title:'பண மேலாண்மை'});
+/* ===== FIREBASE CONFIG: paste your values from Firebase console > Project settings > Your apps > Web app ===== */
+const firebaseConfig={
+ apiKey:"YOUR_API_KEY",
+ authDomain:"YOUR_PROJECT_ID.firebaseapp.com",
+ projectId:"YOUR_PROJECT_ID",
+ storageBucket:"YOUR_PROJECT_ID.appspot.com",
+ messagingSenderId:"YOUR_SENDER_ID",
+ appId:"YOUR_APP_ID"
+};
+/* If the values above are not filled in (or the SDK could not load), the app keeps working in local-only mode. */
+const FB_ON=!!window.firebase&&!!firebaseConfig.apiKey&&!/^YOUR_/.test(firebaseConfig.apiKey);
+let fbAuth=null,fbDb=null,fbUser=null,fbSignup=false,pushT=null,explicitOut=false;
+if(FB_ON){try{firebase.initializeApp(firebaseConfig);fbAuth=firebase.auth();fbDb=firebase.firestore()}catch(e){console.error(e)}}
 const KEY='selavu-v1';
 let S={lang:'ta',items:[]};
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
 const $=id=>document.getElementById(id);
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}cloudPush()};
 const t=k=>TX[S.lang][k];
 const loc=()=>S.lang==='ta'?'ta-IN':'en-IN';
 const fmt=n=>(n<0?'-':'')+'₹'+Math.round(Math.abs(n)).toLocaleString('en-IN');
@@ -452,13 +469,14 @@ async function hashPw(pw,salt,m){
  return {m:'s',h:simpleHash(pw,salt)};
 }
 function authRefresh(){
- const setup=!AU;
+ const setup=(FB_ON&&fbAuth)?fbSignup:!AU;
  $('authT').textContent=t(setup?'aSetupT':'aLoginT');
  $('authSub').textContent=t(setup?'aSetupSub':'aLoginSub');
  $('authBtn').textContent=t(setup?'aCreate':'aLogin');
  $('cfWrap').classList.toggle('hide',!setup);
  $('forgot').classList.toggle('hide',setup);
  $('ap').autocomplete=setup?'new-password':'current-password';
+ if(FB_ON&&fbAuth){$('fbSwitch').classList.remove('hide');$('fbSwitch').textContent=t(setup?'aToLogin':'aToSignup')}
  $('apShow').textContent=$('ap').type==='password'?t('aShow'):t('aHide');
  $('authErr').textContent=aErrKey?t(aErrKey):'';
 }
@@ -476,7 +494,7 @@ function showAuth(focus){
  if(focus)(AU?$('ap'):$('au')).focus();
 }
 $('apShow').onclick=()=>{const p=$('ap'),c=$('ac'),show=p.type==='password';p.type=c.type=show?'text':'password';authRefresh()};
-const doAuth=async()=>{
+const doAuthLocal=async()=>{
  const u=$('au').value.trim(),pw=$('ap').value;
  if(!u||!pw){aErr('aErrEmpty');return}
  if(!AU){
@@ -509,9 +527,80 @@ $('fcY').onclick=()=>{
  try{localStorage.removeItem(AK)}catch(e){}
  AU=null;S.items=[];save();render();showAuth(true);
 };
-applyLang();
-let sess=false;try{sess=sessionStorage.getItem(SK)==='1'}catch(e){}
-if(AU&&sess)showApp();else showAuth(false);
+/* ===== Firebase: Auth (email + password) and Firestore sync (users/{uid}) ===== */
+Object.assign(TX.en,{aToSignup:'New here? Create account',aToLogin:'Already have an account? Log in',aErrEmail:'Enter a valid email address.',aErrExists:'This email already has an account. Log in instead.',aErrNet:'No internet connection. Please try again.',aResetSent:'Password reset email sent. Check your inbox.',aSyncErr:'Could not sync with the cloud. Your data is safe on this device.'});
+Object.assign(TX.ta,{aToSignup:'புதியவரா? கணக்கை உருவாக்குங்கள்',aToLogin:'ஏற்கனவே கணக்கு உள்ளதா? உள்நுழையுங்கள்',aErrEmail:'சரியான மின்னஞ்சல் முகவரியை உள்ளிடவும்.',aErrExists:'இந்த மின்னஞ்சலுக்கு ஏற்கனவே கணக்கு உள்ளது. உள்நுழையவும்.',aErrNet:'இணைய இணைப்பு இல்லை. மீண்டும் முயற்சிக்கவும்.',aResetSent:'கடவுச்சொல் மீட்பு மின்னஞ்சல் அனுப்பப்பட்டது. இன்பாக்ஸைப் பாருங்கள்.',aSyncErr:'கிளவுடுடன் ஒத்திசைக்க முடியவில்லை. தரவு இந்தச் சாதனத்தில் பாதுகாப்பாக உள்ளது.'});
+if(FB_ON&&fbAuth){
+ Object.assign(TX.en,{aUser:'Email',aErrShort:'Password must be at least 6 characters.',aSetupSub:'Create an account to keep your records safe and available on all your devices.',aLoginSub:'Log in to see your money records.',aForgotMsg:''});
+ Object.assign(TX.ta,{aUser:'மின்னஞ்சல்',aErrShort:'கடவுச்சொல் குறைந்தது 6 எழுத்துகள் இருக்க வேண்டும்.',aSetupSub:'உங்கள் பதிவுகளைப் பாதுகாக்கவும் எல்லாச் சாதனங்களிலும் பார்க்கவும் கணக்கை உருவாக்குங்கள்.',aLoginSub:'உங்கள் பணப் பதிவுகளைப் பார்க்க உள்நுழையவும்.',aForgotMsg:''});
+ $('au').type='email';$('au').inputMode='email';$('au').autocomplete='email';
+}
+function cloudPush(){
+ if(!(FB_ON&&fbDb&&fbUser))return;
+ clearTimeout(pushT);pushT=setTimeout(cloudFlush,600);
+}
+async function cloudFlush(){
+ if(!(FB_ON&&fbDb&&fbUser))return;
+ clearTimeout(pushT);
+ try{await fbDb.collection('users').doc(fbUser.uid).set({items:S.items,lang:S.lang,updated:Date.now()})}
+ catch(e){console.error(e);const m=$('micMsg');if(m)m.textContent=t('aSyncErr')}
+}
+async function cloudPull(){
+ const ref=fbDb.collection('users').doc(fbUser.uid),d=await ref.get();
+ const c=d.exists?d.data():null;
+ if(c&&Array.isArray(c.items)){
+  S.items=c.items;if(c.lang==='ta'||c.lang==='en')S.lang=c.lang;
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  applyLang();
+ }else{
+  await ref.set({items:S.items,lang:S.lang,updated:Date.now()});
+ }
+}
+const fbErrKey=e=>{const c=(e&&e.code)||'';
+ return /invalid-email/.test(c)?'aErrEmail':/weak-password/.test(c)?'aErrShort':/email-already/.test(c)?'aErrExists':/user-not-found|wrong-password|invalid-credential|invalid-login/.test(c)?'aErrBad':/network/.test(c)?'aErrNet':''};
+const doAuth=async()=>{
+ if(!(FB_ON&&fbAuth))return doAuthLocal();
+ $('authErr').style.color='';
+ const u=$('au').value.trim(),pw=$('ap').value;
+ if(!u||!pw){aErr('aErrEmpty');return}
+ try{
+  if(fbSignup){
+   if(pw.length<6){aErr('aErrShort');return}
+   if(pw!==$('ac').value){aErr('aErrMatch');return}
+   await fbAuth.createUserWithEmailAndPassword(u,pw);
+  }else{
+   await fbAuth.signInWithEmailAndPassword(u,pw);
+  }
+ }catch(e){
+  const k=fbErrKey(e);
+  if(k){aErr(k)}else{aErrKey='';$('authErr').textContent=t('aErrGen')+' ('+((e&&e.code)||(e&&e.message)||e)+')'}
+ }
+};
+if(FB_ON&&fbAuth){
+ $('fbSwitch').onclick=()=>{fbSignup=!fbSignup;$('authErr').style.color='';aErr('');$('ap').value='';$('ac').value='';authRefresh()};
+ $('forgot').onclick=async()=>{
+  const u=$('au').value.trim();$('authErr').style.color='';
+  if(!u){aErr('aErrEmpty');return}
+  try{await fbAuth.sendPasswordResetEmail(u);aErrKey='aResetSent';$('authErr').textContent=t('aResetSent');$('authErr').style.color='var(--in)'}
+  catch(e){const k=fbErrKey(e);if(k==='aErrBad'){aErrKey='aResetSent';$('authErr').textContent=t('aResetSent');$('authErr').style.color='var(--in)'}else if(k)aErr(k);else aErr('aErrGen')}
+ };
+ $('logout').onclick=async()=>{await cloudFlush();explicitOut=true;await fbAuth.signOut()};
+ fbAuth.onAuthStateChanged(async u=>{
+  fbUser=u;
+  if(u){
+   try{await cloudPull()}catch(e){console.error(e);$('micMsg').textContent=t('aSyncErr')}
+   showApp();
+  }else{
+   if(explicitOut){explicitOut=false;S.items=[];try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}render()}
+   fbSignup=false;showAuth(false);
+  }
+ });
+ applyLang();
+}else{
+ applyLang();
+ let sess=false;try{sess=sessionStorage.getItem(SK)==='1'}catch(e){}
+ if(AU&&sess)showApp();else showAuth(false);
+}
 </script>
 </body>
 </html>
